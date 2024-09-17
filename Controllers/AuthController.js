@@ -1,5 +1,5 @@
-import ErrorResponse from "../Middleware/ErrorResponse";
-import UserModel from "../Model/UserModel";
+import ErrorResponse from "../Middleware/ErrorResponse.js";
+import UserModel from "../Model/UserModel.js";
 
 /*    
 ⁡⁣⁢⁣Desc⁡   : ⁡⁣⁣⁢Ragister User⁡
@@ -23,6 +23,18 @@ export const RagisterUser = async (req, res, next) => {
     }
 
     // ⁡⁢⁢⁢Store⁡ //
+    await UserModel.create({
+       email : email,
+       password : passsword
+    })
+
+    // ⁡⁢⁢⁢Response⁡ // 
+    res.status(201).send({
+      success : true,
+      message : "User Ragistered Succefully"
+    })
+
+
   } catch (error) {
     console.log(error);
     next(new ErrorResponse(504, error.message));
