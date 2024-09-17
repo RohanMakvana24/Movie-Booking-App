@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import bcrypt from "bcryptjs";
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -42,13 +42,25 @@ const UserSchema = new mongoose.Schema(
   }
 );
 
-// ⁡⁣⁢⁣Add Virtual Field //⁡
+// ⁡⁣⁢⁣Add Virtual Field⁡ //
 UserSchema.virtual("bookings", {
   ref: "Bookings",
   localField: "_id",
   foreignField: "userId",
   count: true,
   justOne: false,
+});
+
+// ⁡⁣⁢⁣Password Hashing⁡ //
+UserSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) return next();
+  try {
+    this.password = await bcrypt.hash(this.password, 10);
+    next();
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
 });
 
 const UserModel = new mongoose.model("Users", UserSchema);

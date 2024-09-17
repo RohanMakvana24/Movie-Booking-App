@@ -1,12 +1,7 @@
-const ErrorResponse = async (status, message) => {
-  try {
-    const error = new Error(message);
-    error.status = status;
-    return error;
-  } catch (error) {
-    console.log(`Error in Custome Error : `, error);
-    throw error;
-  }
-};
+function ErrorResponse(status, message) {
+  const error = Error(message);
+  error.status = status;
+  return error;
+}
 
 export default ErrorResponse;

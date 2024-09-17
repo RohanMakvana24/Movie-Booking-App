@@ -5,6 +5,7 @@ import db_connect from "./config/database/connect.js";
 import morgan from "morgan";
 import AuthRoute from "./router/AuthRoute.js";
 import HandleGlobalError from "./Middleware/ErrorHandle.js";
+import HandleGlobalErorr from "./Middleware/ErrorHandle.js";
 
 // ⁡⁣⁢⁣*DOTENV CONFIG*⁡⁡ //
 dotenv.config({ path: "./config/.env" });
@@ -17,19 +18,21 @@ const port = process.env.PORT;
 
 //⁡⁢⁢⁣ ⁡⁢⁢⁡⁣⁢⁣* ⁡⁣⁢⁣MiddleWare⁡ ⁡⁣⁢⁣*⁡⁡⁡ //
 server.use(express.json());
+server.use(express.static("public"));
 if (process.env.NODE_ENV === "devlopment") {
   server.use(morgan("dev"));
 }
 
 //⁡⁢⁢⁣ ⁡⁣⁢⁣* Routes *⁡⁡ //
-const versionOne = (route) => `api/v1/auth/${route}`;
-server.use(versionOne("auth"), AuthRoute);
-server.use(HandleGlobalError);
-
+server.use("/api/v1/auth", AuthRoute);
+server.use(HandleGlobalErorr);
 //⁡⁢⁢⁣ ⁡⁣⁢⁣* SERVER LISTEN *⁡⁡⁡ //
 server.listen(port, () => {
   console.log(`Server Is Listen On PORT ${port} 😘 `.yellow);
 });
+
+//⁡⁢⁢⁣ ⁡⁣⁢⁡⁣⁢⁣* View Engine Set * ⁡//
+server.set("view engine", "ejs");
 
 //⁡⁢⁢⁣ ⁡⁣⁢⁣* HANDLE UNHANDLED PROMISE REJECTION *⁡⁡⁡ //
 process.on("unhandledRejection", (err, promise) => {

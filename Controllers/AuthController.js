@@ -8,33 +8,32 @@ import UserModel from "../Model/UserModel.js";
 */
 export const RagisterUser = async (req, res, next) => {
   try {
-    const { email, passsword } = req.body;
+    const { email, password } = req.body;
 
-    if (!email || !passsword) {
+    if (!email || !password) {
       return next(new ErrorResponse(400, "All Field are required"));
     }
 
     // ⁡⁢⁢⁢Check if Email Already Ragistered⁡ //
     const User = await UserModel.findOne({ email: email });
-    if (!User) {
+    if (User) {
       return next(
         new ErrorResponse(400, "Email is already ragistered try another")
       );
     }
 
     // ⁡⁢⁢⁢Store⁡ //
-    await UserModel.create({
-       email : email,
-       password : passsword
-    })
+    const newUser = await UserModel.create({
+      email: email,
+      password: password,
+    });
 
-    // ⁡⁢⁢⁢Response⁡ // 
+    // ⁡⁢⁢⁢Response⁡ //
     res.status(201).send({
-      success : true,
-      message : "User Ragistered Succefully"
-    })
-
-
+      success: true,
+      message: "User Ragistered Succefully",
+      newUser,
+    });
   } catch (error) {
     console.log(error);
     next(new ErrorResponse(504, error.message));

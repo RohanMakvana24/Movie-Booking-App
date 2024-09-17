@@ -1,35 +1,41 @@
 import ErrorResponse from "./ErrorResponse.js";
 
-const HandleGlobalError = async (err, req, res, next) => {
+const HandleGlobalErorr = (err, req, res, next) => {
+  let error = {
+    ...err,
+  };
+  error.message = err.message;
   console.log(err);
-  // ⁡⁢⁣⁢* Mongoose Bad Object Id *⁡⁡ //
+
+  //Mongoose bad ObjectID
   if (err.name == "CastError") {
-    const Message = "Resource Not Found";
-    return next(new ErrorResponse(500, Message));
+    const message = "Resouce is not Found";
+    error = new ErrorResponse(message, 404);
   }
 
-  // ⁡⁢⁣⁡⁢⁣⁢* Mongoose Dublicate Keys *⁡⁡ //
+  // Mongoose duplicate key
   if (err.code == 11000) {
-    const Message = "Dublicate Field Value Entered";
-    return next(new ErrorResponse(500, Message));
+    const message = "Duplicate field value entered";
+    console.log(err);
+    error = new ErrorResponse(message, 400);
   }
 
-  // ⁡⁢⁣⁢* Mongoose Validation Error *⁡⁡⁡ //
-  if (err.name == "ValidationError") {
-    let Messsages = [];
-    Object.values(err.errors).forEach((er) => {
-      Messsages.push({
-        field: er.properties.path,
-        message: er.message,
+  // Mongoose validation error
+  if (err.name === "ValidationError") {
+    const message = [];
+    Object.values(err.errors).forEach((errr) => {
+      message.push({
+        field: errr.properties.path,
+        message: errr.message,
       });
     });
-    return next(new ErrorResponse(500, Messsages));
+    error = new ErrorResponse(null, 400, message);
   }
 
-  res.status(500).json({
+  res.status(error.status || 500).json({
     success: false,
-    message: "Somenthing Went Wrong",
+    error: error.messageWithField || error.message || "Server Error",
   });
 };
 
-export default HandleGlobalError;
+export default HandleGlobalErorr;
