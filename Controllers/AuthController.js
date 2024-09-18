@@ -40,3 +40,29 @@ export const RagisterUser = async (req, res, next) => {
   }
 };
 // ⁡⁣⁢⁡⁣⁢⁣-----------------⁡ # ⁡⁢⁣⁣End Ragister Section⁡ # ⁡⁣⁢⁣--------------------⁡ //
+
+
+/*    
+⁡⁣⁢⁣Desc⁡   : ⁡⁣⁣⁢Login User⁡
+⁡⁣⁢⁣Route⁡  : ⁡⁣⁣⁢POST /api/v1/auth⁡/login
+⁡⁣⁢⁣Access⁡ :⁡⁢⁣⁣ ⁡⁣⁣⁢Public⁡
+*/
+
+export const Login = async (req,res)=>{
+  try {
+    
+    const {email , password} = req.body;
+
+    // ⁡⁢⁣⁣Validation⁡ //
+    if(!email || !password){
+      return next(new ErrorResponse(400 , "All Fields Are Required"))
+    }
+
+    
+
+
+  } catch (error) {
+    console.log(error)
+    next(new ErrorResponse(504 , error.mesage))
+  }
+}
